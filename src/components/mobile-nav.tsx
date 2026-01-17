@@ -26,60 +26,14 @@ import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
 
 const navigation = [
-  {
-    name: "Dashboard",
-    href: "/",
-    icon: LayoutDashboard,
-    description: "Overview & KPIs",
-  },
-  {
-    name: "Evidence",
-    href: "/evidence",
-    icon: FileText,
-    badge: "8",
-    badgeVariant: "default" as const,
-    description: "Key proof items",
-  },
-  {
-    name: "Timeline",
-    href: "/timeline",
-    icon: Clock,
-    description: "Chronological events",
-  },
-  {
-    name: "Actors",
-    href: "/actors",
-    icon: Users,
-    description: "Parties involved",
-  },
-  {
-    name: "Defense Strategy",
-    href: "/defense",
-    icon: Shield,
-    description: "Legal arguments",
-  },
-  {
-    name: "Documents",
-    href: "/documents",
-    icon: FolderOpen,
-    badge: "41",
-    description: "File repository",
-  },
-  {
-    name: "Gallery",
-    href: "/gallery",
-    icon: Camera,
-    badge: "12",
-    description: "Photo evidence",
-  },
-  {
-    name: "Case Brief",
-    href: "/brief",
-    icon: Send,
-    badge: "NEW",
-    badgeVariant: "default" as const,
-    description: "Send to Enegix",
-  },
+  { name: "Dashboard", href: "/", icon: LayoutDashboard },
+  { name: "Evidence", href: "/evidence", icon: FileText },
+  { name: "Timeline", href: "/timeline", icon: Clock },
+  { name: "Actors", href: "/actors", icon: Users },
+  { name: "Defense Strategy", href: "/defense", icon: Shield },
+  { name: "Documents", href: "/documents", icon: FolderOpen },
+  { name: "Gallery", href: "/gallery", icon: Camera },
+  { name: "Case Brief", href: "/brief", icon: Send },
 ];
 
 export function MobileNav() {
@@ -194,14 +148,6 @@ export function MobileNav() {
                     >
                       <Icon className="h-5 w-5" />
                       <span className="flex-1 text-sm font-medium">{item.name}</span>
-                      {item.badge && (
-                        <Badge
-                          variant={item.badgeVariant || "secondary"}
-                          className="text-xs"
-                        >
-                          {item.badge}
-                        </Badge>
-                      )}
                     </Link>
                   );
                 })}
