@@ -15,6 +15,7 @@ import {
   Mail,
 } from "lucide-react";
 
+// Sorted chronologically by date
 const accusations = [
   {
     id: 1,
@@ -27,6 +28,14 @@ const accusations = [
   },
   {
     id: 2,
+    action: "You confirmed BTC never went through DPG",
+    quote: "DPG has multiple subaccounts each withdrawing mined digital assets to their respective wallet addresses which are NOT UNDER DPG'S CONTROL",
+    source: "Dimitri Ivanov (Enegix)",
+    date: "July 2, 2024",
+    proof: "WhatsApp - Yerbo Enegix",
+  },
+  {
+    id: 3,
     action: "You appointed your family member as Director of DPG",
     quote: "Sarsenov Olzhas Bolatovich appointed as Director",
     source: "Official Registration Document",
@@ -35,7 +44,15 @@ const accusations = [
     screenshot: "/evidence/whatsapp/registration-doc.jpg",
   },
   {
-    id: 3,
+    id: 4,
+    action: "You charged us $31,500 for YOUR staff to run DPG",
+    quote: "Administrative fee for 9 months February-October 2024: $31,500 (Director + Accountant + Lawyer salaries)",
+    source: "DPG Invoice to Hearst",
+    date: "November 5, 2024",
+    proof: "00002037-DPG admin invoice.pdf",
+  },
+  {
+    id: 5,
     action: "You told us this structure was required for importing miners",
     quote: "Kazakhstan mining license regulations prohibit hosters (VerCom LLC) from renting premises to miners (Digital Performance Group LLC)",
     source: "Dimitri Ivanov (Enegix Sales Director)",
@@ -44,7 +61,7 @@ const accusations = [
     screenshot: "/evidence/whatsapp/dpg-transfer-2.jpg",
   },
   {
-    id: 4,
+    id: 6,
     action: "You managed all administrative and legal matters",
     quote: "Almas managed everything... you manage everything since beginning",
     source: "Olivier Nejkovic to Enegix",
@@ -53,15 +70,7 @@ const accusations = [
     screenshot: "/evidence/whatsapp/dpg-transfer-3.jpg",
   },
   {
-    id: 5,
-    action: "You charged us $31,500 for YOUR staff to run DPG",
-    quote: "Administrative fee for 9 months February-October 2024: $31,500 (Director + Accountant + Lawyer salaries)",
-    source: "DPG Invoice to Hearst",
-    date: "November 5, 2024",
-    proof: "00002037-DPG admin invoice.pdf",
-  },
-  {
-    id: 6,
+    id: 7,
     action: "You never gave us access to Kazakhstan systems",
     quote: "He doesn't have any [Kazakhstan phone number], what's the solution?",
     source: "WhatsApp conversation",
@@ -70,29 +79,21 @@ const accusations = [
     screenshot: "/evidence/whatsapp/recent-1.jpg",
   },
   {
-    id: 7,
-    action: "You confirmed BTC never went through DPG",
-    quote: "DPG has multiple subaccounts each withdrawing mined digital assets to their respective wallet addresses which are NOT UNDER DPG'S CONTROL",
+    id: 8,
+    action: "Now you demand we pay $265,000 for YOUR declaration",
+    quote: "Given the exchange rate, maybe you can send 3 BTC",
     source: "Dimitri Ivanov (Enegix)",
-    date: "July 2, 2024",
-    proof: "WhatsApp - Yerbo Enegix",
+    date: "January 12, 2026",
+    proof: "Telegram - Dimitri Enegix",
   },
   {
-    id: 8,
+    id: 9,
     action: "You made the tax declaration of 67 BTC without our knowledge",
     quote: "How we can be aware if you never spoke about this",
     source: "Olivier Nejkovic to Enegix",
     date: "January 16, 2026",
     proof: "Telegram - Dimitri Enegix",
     screenshot: "/evidence/whatsapp/recent-2.jpg",
-  },
-  {
-    id: 9,
-    action: "Now you demand we pay $265,000 for YOUR declaration",
-    quote: "Given the exchange rate, maybe you can send 3 BTC",
-    source: "Dimitri Ivanov (Enegix)",
-    date: "January 12, 2026",
-    proof: "Telegram - Dimitri Enegix",
   },
 ];
 
