@@ -24,7 +24,7 @@ export default function LoginPage() {
     if (session) {
       const sessionData = JSON.parse(session);
       if (sessionData.expires > Date.now()) {
-        router.push("/");
+        router.push("/brief");
         return;
       } else {
         // Session expired
@@ -51,7 +51,7 @@ export default function LoginPage() {
         authenticated: true,
       };
       localStorage.setItem("dpg-session", JSON.stringify(sessionData));
-      router.push("/");
+      router.push("/brief");
     } else if (pin === TEMP_PIN) {
       // Temporary - 10 minutes only
       const sessionData = {
@@ -60,7 +60,7 @@ export default function LoginPage() {
         authenticated: true,
       };
       localStorage.setItem("dpg-session", JSON.stringify(sessionData));
-      router.push("/");
+      router.push("/brief");
     } else {
       setError("Invalid PIN");
       setPin("");
