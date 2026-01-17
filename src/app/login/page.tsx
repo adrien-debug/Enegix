@@ -53,13 +53,23 @@ export default function LoginPage() {
       localStorage.setItem("dpg-session", JSON.stringify(sessionData));
       router.push("/brief");
     } else if (pin === TEMP_PIN) {
-      // Temporary - 10 minutes only
+      // Check if temp PIN was already used
+      const tempUsed = localStorage.getItem("dpg-temp-used");
+      if (tempUsed === "true") {
+        setError("PIN already used");
+        setPin("");
+        setTimeout(() => setError(""), 3000);
+        return;
+      }
+      
+      // Temporary - 10 minutes only, ONE TIME USE
       const sessionData = {
         expires: Date.now() + TEMP_SESSION_DURATION,
         type: "temporary",
         authenticated: true,
       };
       localStorage.setItem("dpg-session", JSON.stringify(sessionData));
+      localStorage.setItem("dpg-temp-used", "true"); // Mark as used
       router.push("/brief");
     } else {
       setError("Invalid PIN");
@@ -121,7 +131,7 @@ export default function LoginPage() {
               <div className="flex items-center gap-2 text-sm">
                 <Clock className="h-4 w-4 text-warning" />
                 <span className="font-medium">Temporary Access</span>
-                <span className="ml-auto text-xs text-muted-foreground">10 min</span>
+                <span className="ml-auto text-xs text-muted-foreground">10 min • 1 use</span>
               </div>
             </div>
           </div>
