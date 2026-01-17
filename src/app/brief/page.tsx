@@ -179,7 +179,7 @@ export default function BriefPage() {
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="h-4 w-4 text-success shrink-0" />
-                <span><strong className="text-foreground">2,285 miners</strong> hosted at Ekibastuz site</span>
+                <span><strong className="text-foreground">3,500+ miners</strong> hosted at Ekibastuz site</span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="h-4 w-4 text-success shrink-0" />
