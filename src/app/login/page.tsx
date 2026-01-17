@@ -5,10 +5,9 @@ import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Lock, Clock, AlertTriangle, Shield } from "lucide-react";
+import { Lock, AlertTriangle } from "lucide-react";
 
 const ADMIN_PIN = "0334";
-const TEMP_PIN = "2100";
 const TEMP_SESSION_DURATION = 10 * 60 * 1000; // 10 minutes
 const ADMIN_SESSION_DURATION = 24 * 60 * 60 * 1000; // 24 hours
 
@@ -52,29 +51,34 @@ export default function LoginPage() {
       };
       localStorage.setItem("dpg-session", JSON.stringify(sessionData));
       router.push("/brief");
-    } else if (pin === TEMP_PIN) {
-      // Check if temp PIN was already used
-      const tempUsed = localStorage.getItem("dpg-temp-used");
-      if (tempUsed === "true") {
-        setError("PIN already used");
+    } else {
+      // Check if it matches the dynamic temp code
+      const activeTempCode = localStorage.getItem("dpg-active-temp-code");
+      
+      if (activeTempCode && pin === activeTempCode) {
+        // Check if temp PIN was already used
+        const tempUsed = localStorage.getItem("dpg-temp-used");
+        if (tempUsed === "true") {
+          setError("Code already used");
+          setPin("");
+          setTimeout(() => setError(""), 3000);
+          return;
+        }
+        
+        // Temporary - 10 minutes only, ONE TIME USE
+        const sessionData = {
+          expires: Date.now() + TEMP_SESSION_DURATION,
+          type: "temporary",
+          authenticated: true,
+        };
+        localStorage.setItem("dpg-session", JSON.stringify(sessionData));
+        localStorage.setItem("dpg-temp-used", "true"); // Mark as used
+        router.push("/brief");
+      } else {
+        setError("Invalid PIN");
         setPin("");
         setTimeout(() => setError(""), 3000);
-        return;
       }
-      
-      // Temporary - 10 minutes only, ONE TIME USE
-      const sessionData = {
-        expires: Date.now() + TEMP_SESSION_DURATION,
-        type: "temporary",
-        authenticated: true,
-      };
-      localStorage.setItem("dpg-session", JSON.stringify(sessionData));
-      localStorage.setItem("dpg-temp-used", "true"); // Mark as used
-      router.push("/brief");
-    } else {
-      setError("Invalid PIN");
-      setPin("");
-      setTimeout(() => setError(""), 3000);
     }
   };
 
@@ -119,21 +123,10 @@ export default function LoginPage() {
             </Button>
           </form>
 
-          <div className="mt-6 space-y-3">
-            <div className="p-3 rounded-lg bg-primary/5 border border-primary/20">
-              <div className="flex items-center gap-2 text-sm">
-                <Shield className="h-4 w-4 text-primary" />
-                <span className="font-medium">Admin Access</span>
-                <span className="ml-auto text-xs text-muted-foreground">Unlimited</span>
-              </div>
-            </div>
-            <div className="p-3 rounded-lg bg-warning/5 border border-warning/20">
-              <div className="flex items-center gap-2 text-sm">
-                <Clock className="h-4 w-4 text-warning" />
-                <span className="font-medium">Temporary Access</span>
-                <span className="ml-auto text-xs text-muted-foreground">10 min • 1 use</span>
-              </div>
-            </div>
+          <div className="mt-6">
+            <p className="text-xs text-center text-muted-foreground">
+              Enter your access code provided by the administrator
+            </p>
           </div>
         </CardContent>
       </Card>

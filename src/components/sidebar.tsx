@@ -18,7 +18,9 @@ import {
   Timer,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { Key, RefreshCw } from "lucide-react";
 
 const navigation = [
   { name: "Dashboard", href: "/", icon: LayoutDashboard },
@@ -34,6 +36,7 @@ const navigation = [
 export function Sidebar() {
   const pathname = usePathname();
   const [sessionInfo, setSessionInfo] = useState<{ type: string; timeLeft: number } | null>(null);
+  const [tempCode, setTempCode] = useState<string | null>(null);
 
   useEffect(() => {
     const checkSession = () => {
@@ -47,12 +50,27 @@ export function Sidebar() {
           }
         } catch {}
       }
+      // Check for active temp code
+      const activeCode = localStorage.getItem("dpg-active-temp-code");
+      if (activeCode) {
+        setTempCode(activeCode);
+      } else {
+        setTempCode(null);
+      }
     };
 
     checkSession();
     const interval = setInterval(checkSession, 1000);
     return () => clearInterval(interval);
   }, []);
+
+  const generateNewCode = () => {
+    // Generate random 4-digit code
+    const code = Math.floor(1000 + Math.random() * 9000).toString();
+    localStorage.setItem("dpg-active-temp-code", code);
+    localStorage.removeItem("dpg-temp-used"); // Reset the used flag
+    setTempCode(code);
+  };
 
   const formatTime = (ms: number) => {
     const totalSeconds = Math.floor(ms / 1000);
@@ -138,7 +156,34 @@ export function Sidebar() {
         </nav>
 
         {/* Footer */}
-        <div className="border-t border-sidebar-border p-4">
+        <div className="border-t border-sidebar-border p-4 space-y-3">
+          {/* Admin: Generate Temp Code */}
+          {sessionInfo?.type === "admin" && (
+            <div className="rounded-lg bg-primary/5 border border-primary/20 p-3">
+              <div className="flex items-center gap-2 mb-2">
+                <Key className="h-3.5 w-3.5 text-primary" />
+                <span className="text-xs font-medium">Guest Access</span>
+              </div>
+              {tempCode ? (
+                <div className="flex items-center gap-2">
+                  <span className="font-mono text-lg font-bold text-primary">{tempCode}</span>
+                  <span className="text-xs text-muted-foreground">• 10 min • 1 use</span>
+                </div>
+              ) : (
+                <p className="text-xs text-muted-foreground">No active code</p>
+              )}
+              <Button 
+                size="sm" 
+                variant="outline" 
+                className="w-full mt-2 h-7 text-xs"
+                onClick={generateNewCode}
+              >
+                <RefreshCw className="h-3 w-3 mr-1" />
+                {tempCode ? "New Code" : "Generate Code"}
+              </Button>
+            </div>
+          )}
+
           <div className="rounded-lg bg-sidebar-accent/50 p-3">
             <div className="flex items-center justify-between">
               <span className="text-xs font-medium text-muted-foreground">
