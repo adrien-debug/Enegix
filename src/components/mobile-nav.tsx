@@ -90,9 +90,12 @@ export function MobileNav() {
       <div className="flex items-center justify-between p-3">
         {/* Logo */}
         <div className="flex items-center gap-2">
-          <div className="h-7 w-7 rounded bg-primary flex items-center justify-center">
-            <Scale className="h-3.5 w-3.5 text-primary-foreground" />
-          </div>
+          <img 
+            src="/enegix-logo.svg" 
+            alt="Enegix" 
+            className="h-5 w-auto"
+          />
+          <div className="h-4 w-px bg-border" />
           <h1 className="text-sm font-semibold">DPG Defense</h1>
         </div>
 
@@ -113,7 +116,12 @@ export function MobileNav() {
             <SheetContent side="right" className="w-72 p-0">
               <SheetHeader className="p-4 border-b border-border">
                 <SheetTitle className="flex items-center gap-2">
-                  <Scale className="h-5 w-5 text-primary" />
+                  <img 
+                    src="/enegix-logo.svg" 
+                    alt="Enegix" 
+                    className="h-5 w-auto"
+                  />
+                  <div className="h-4 w-px bg-border" />
                   DPG Defense
                 </SheetTitle>
               </SheetHeader>

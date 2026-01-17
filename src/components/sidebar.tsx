@@ -83,9 +83,12 @@ export function Sidebar() {
       <div className="flex h-full flex-col">
         {/* Header */}
         <div className="flex items-center gap-3 px-6 py-5 border-b border-sidebar-border">
-          <div className="flex h-9 w-9 items-center justify-center rounded bg-primary">
-            <Scale className="h-4 w-4 text-primary-foreground" />
-          </div>
+          <img 
+            src="/enegix-logo.svg" 
+            alt="Enegix" 
+            className="h-7 w-auto"
+          />
+          <div className="h-6 w-px bg-border" />
           <div>
             <h1 className="text-base font-semibold text-sidebar-foreground">
               DPG Defense
