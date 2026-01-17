@@ -23,6 +23,7 @@ const accusations = [
     source: "Yerbolsyn Sarsenov (Enegix CEO)",
     date: "May 17, 2024",
     proof: "WhatsApp - DPG company transfer",
+    screenshot: "/evidence/whatsapp/dpg-transfer-1.jpg",
   },
   {
     id: 2,
@@ -31,6 +32,7 @@ const accusations = [
     source: "Official Registration Document",
     date: "August 30, 2024",
     proof: "РЕШЕНИЕ о перерегистрации_v.1.pdf",
+    screenshot: "/evidence/whatsapp/registration-doc.jpg",
   },
   {
     id: 3,
@@ -39,6 +41,7 @@ const accusations = [
     source: "Dimitri Ivanov (Enegix Sales Director)",
     date: "October 30, 2025",
     proof: "WhatsApp - DPG company transfer",
+    screenshot: "/evidence/whatsapp/dpg-transfer-2.jpg",
   },
   {
     id: 4,
@@ -47,6 +50,7 @@ const accusations = [
     source: "Olivier Nejkovic to Enegix",
     date: "October 31, 2025",
     proof: "WhatsApp - DPG company transfer",
+    screenshot: "/evidence/whatsapp/dpg-transfer-3.jpg",
   },
   {
     id: 5,
@@ -63,6 +67,7 @@ const accusations = [
     source: "WhatsApp conversation",
     date: "October 31, 2025",
     proof: "WhatsApp - DPG company transfer",
+    screenshot: "/evidence/whatsapp/recent-1.jpg",
   },
   {
     id: 7,
@@ -79,6 +84,7 @@ const accusations = [
     source: "Olivier Nejkovic to Enegix",
     date: "January 16, 2026",
     proof: "Telegram - Dimitri Enegix",
+    screenshot: "/evidence/whatsapp/recent-2.jpg",
   },
   {
     id: 9,
@@ -339,6 +345,15 @@ export default function BriefPage() {
                     <blockquote className="bg-muted/50 rounded-lg p-2.5 md:p-3 mb-2 border-l-2 border-primary/50 italic text-xs md:text-sm text-muted-foreground">
                       &ldquo;{item.quote}&rdquo;
                     </blockquote>
+                    {item.screenshot && (
+                      <div className="mb-3 rounded-lg overflow-hidden border bg-muted/30">
+                        <img 
+                          src={item.screenshot} 
+                          alt={`Evidence: ${item.action}`}
+                          className="w-full max-h-64 object-contain"
+                        />
+                      </div>
+                    )}
                     <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
                       <Badge variant="secondary" className="text-xs">{item.date}</Badge>
                       <span className="truncate">{item.source}</span>
