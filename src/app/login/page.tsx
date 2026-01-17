@@ -5,38 +5,17 @@ import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Lock, Clock, AlertTriangle } from "lucide-react";
+import { Lock, Clock, AlertTriangle, Shield } from "lucide-react";
 
-// PIN rotation schedule (in minutes from midnight)
-function getCurrentPin(): { pin: string; nextChange: number; label: string } {
-  const now = new Date();
-  const minutesSinceMidnight = now.getHours() * 60 + now.getMinutes();
-  
-  // Rotate every 10 minutes through the cycle
-  const cyclePosition = Math.floor(minutesSinceMidnight / 10) % 3;
-  
-  const pins = [
-    { pin: "2121", label: "Phase 1" },
-    { pin: "3131", label: "Phase 2" },
-    { pin: "4141", label: "Phase 3" },
-  ];
-  
-  const currentPin = pins[cyclePosition];
-  const nextChangeMinute = (Math.floor(minutesSinceMidnight / 10) + 1) * 10;
-  const minutesUntilChange = nextChangeMinute - minutesSinceMidnight;
-  
-  return {
-    pin: currentPin.pin,
-    nextChange: minutesUntilChange,
-    label: currentPin.label,
-  };
-}
+const ADMIN_PIN = "0334";
+const TEMP_PIN = "2100";
+const TEMP_SESSION_DURATION = 10 * 60 * 1000; // 10 minutes
+const ADMIN_SESSION_DURATION = 24 * 60 * 60 * 1000; // 24 hours
 
 export default function LoginPage() {
   const [pin, setPin] = useState("");
   const [error, setError] = useState("");
-  const [timeLeft, setTimeLeft] = useState(0);
-  const [currentPhase, setCurrentPhase] = useState("");
+  const [sessionTimeLeft, setSessionTimeLeft] = useState<number | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -47,44 +26,37 @@ export default function LoginPage() {
       if (sessionData.expires > Date.now()) {
         router.push("/");
         return;
+      } else {
+        // Session expired
+        localStorage.removeItem("dpg-session");
       }
     }
-
-    // Update countdown every second
-    const updateCountdown = () => {
-      const { nextChange, label } = getCurrentPin();
-      setTimeLeft(nextChange * 60); // Convert to seconds
-      setCurrentPhase(label);
-    };
-
-    updateCountdown();
-    const interval = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          updateCountdown();
-          return prev;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-
-    return () => clearInterval(interval);
   }, [router]);
 
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
+  const formatTime = (ms: number) => {
+    const totalSeconds = Math.floor(ms / 1000);
+    const mins = Math.floor(totalSeconds / 60);
+    const secs = totalSeconds % 60;
     return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const { pin: correctPin } = getCurrentPin();
 
-    if (pin === correctPin) {
-      // Set session for 30 minutes
+    if (pin === ADMIN_PIN) {
+      // Admin - unlimited session (24h)
       const sessionData = {
-        expires: Date.now() + 30 * 60 * 1000,
+        expires: Date.now() + ADMIN_SESSION_DURATION,
+        type: "admin",
+        authenticated: true,
+      };
+      localStorage.setItem("dpg-session", JSON.stringify(sessionData));
+      router.push("/");
+    } else if (pin === TEMP_PIN) {
+      // Temporary - 10 minutes only
+      const sessionData = {
+        expires: Date.now() + TEMP_SESSION_DURATION,
+        type: "temporary",
         authenticated: true,
       };
       localStorage.setItem("dpg-session", JSON.stringify(sessionData));
@@ -137,19 +109,21 @@ export default function LoginPage() {
             </Button>
           </form>
 
-          <div className="mt-6 p-4 rounded-lg bg-muted/50 border">
-            <div className="flex items-center justify-between text-sm">
-              <div className="flex items-center gap-2 text-muted-foreground">
-                <Clock className="h-4 w-4" />
-                <span>{currentPhase}</span>
-              </div>
-              <div className="font-mono text-lg font-bold text-primary">
-                {formatTime(timeLeft)}
+          <div className="mt-6 space-y-3">
+            <div className="p-3 rounded-lg bg-primary/5 border border-primary/20">
+              <div className="flex items-center gap-2 text-sm">
+                <Shield className="h-4 w-4 text-primary" />
+                <span className="font-medium">Admin Access</span>
+                <span className="ml-auto text-xs text-muted-foreground">Unlimited</span>
               </div>
             </div>
-            <p className="text-xs text-muted-foreground mt-2 text-center">
-              PIN rotates automatically
-            </p>
+            <div className="p-3 rounded-lg bg-warning/5 border border-warning/20">
+              <div className="flex items-center gap-2 text-sm">
+                <Clock className="h-4 w-4 text-warning" />
+                <span className="font-medium">Temporary Access</span>
+                <span className="ml-auto text-xs text-muted-foreground">10 min</span>
+              </div>
+            </div>
           </div>
         </CardContent>
       </Card>

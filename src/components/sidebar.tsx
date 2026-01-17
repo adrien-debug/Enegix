@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -14,6 +15,7 @@ import {
   AlertTriangle,
   Send,
   Camera,
+  Timer,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -77,6 +79,33 @@ const navigation = [
 
 export function Sidebar() {
   const pathname = usePathname();
+  const [sessionInfo, setSessionInfo] = useState<{ type: string; timeLeft: number } | null>(null);
+
+  useEffect(() => {
+    const checkSession = () => {
+      const session = localStorage.getItem("dpg-session");
+      if (session) {
+        try {
+          const data = JSON.parse(session);
+          const remaining = data.expires - Date.now();
+          if (remaining > 0) {
+            setSessionInfo({ type: data.type || "admin", timeLeft: remaining });
+          }
+        } catch {}
+      }
+    };
+
+    checkSession();
+    const interval = setInterval(checkSession, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const formatTime = (ms: number) => {
+    const totalSeconds = Math.floor(ms / 1000);
+    const mins = Math.floor(totalSeconds / 60);
+    const secs = totalSeconds % 60;
+    return `${mins}:${secs.toString().padStart(2, "0")}`;
+  };
 
   return (
     <aside className="fixed left-0 top-0 z-40 h-screen w-64 bg-sidebar border-r border-sidebar-border hidden md:block">
@@ -96,6 +125,21 @@ export function Sidebar() {
             <p className="text-xs text-muted-foreground">Kazakhstan Case</p>
           </div>
         </div>
+
+        {/* Session Timer (for temporary access) */}
+        {sessionInfo?.type === "temporary" && (
+          <div className="mx-4 mt-4 border-l-2 border-l-destructive bg-destructive/5 p-3">
+            <div className="flex items-center gap-2">
+              <Timer className="h-3.5 w-3.5 text-destructive" />
+              <span className="text-xs font-medium text-destructive">
+                Session expires in
+              </span>
+              <span className="ml-auto font-mono text-sm font-bold text-destructive">
+                {formatTime(sessionInfo.timeLeft)}
+              </span>
+            </div>
+          </div>
+        )}
 
         {/* Alert Banner */}
         <div className="mx-4 mt-4 border-l-2 border-l-warning bg-card p-3">

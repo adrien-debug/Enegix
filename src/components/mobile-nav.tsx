@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -17,6 +17,7 @@ import {
   Camera,
   Menu,
   X,
+  Timer,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -84,6 +85,33 @@ const navigation = [
 export function MobileNav() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const [sessionInfo, setSessionInfo] = useState<{ type: string; timeLeft: number } | null>(null);
+
+  useEffect(() => {
+    const checkSession = () => {
+      const session = localStorage.getItem("dpg-session");
+      if (session) {
+        try {
+          const data = JSON.parse(session);
+          const remaining = data.expires - Date.now();
+          if (remaining > 0) {
+            setSessionInfo({ type: data.type || "admin", timeLeft: remaining });
+          }
+        } catch {}
+      }
+    };
+
+    checkSession();
+    const interval = setInterval(checkSession, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const formatTime = (ms: number) => {
+    const totalSeconds = Math.floor(ms / 1000);
+    const mins = Math.floor(totalSeconds / 60);
+    const secs = totalSeconds % 60;
+    return `${mins}:${secs.toString().padStart(2, "0")}`;
+  };
 
   return (
     <div className="md:hidden fixed top-0 left-0 right-0 z-50 bg-background border-b border-border">
@@ -99,11 +127,18 @@ export function MobileNav() {
           <h1 className="text-sm font-semibold">DPG Defense</h1>
         </div>
 
-        {/* Tax Debt Badge */}
+        {/* Session Timer or Tax Badge */}
         <div className="flex items-center gap-2">
-          <Badge variant="outline" className="text-orange-500 border-orange-500/50 text-xs">
-            $265K
-          </Badge>
+          {sessionInfo?.type === "temporary" ? (
+            <Badge variant="outline" className="text-destructive border-destructive/50 text-xs font-mono">
+              <Timer className="h-3 w-3 mr-1" />
+              {formatTime(sessionInfo.timeLeft)}
+            </Badge>
+          ) : (
+            <Badge variant="outline" className="text-orange-500 border-orange-500/50 text-xs">
+              $265K
+            </Badge>
+          )}
           
           {/* Hamburger Button */}
           <Sheet open={open} onOpenChange={setOpen}>
